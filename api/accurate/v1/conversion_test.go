@@ -7,13 +7,27 @@ import (
 	utilconversion "github.com/cybozu-go/accurate/internal/util/conversion"
 	"k8s.io/apimachinery/pkg/api/apitesting/fuzzer"
 	runtimeserializer "k8s.io/apimachinery/pkg/runtime/serializer"
+	"sigs.k8s.io/controller-runtime/pkg/conversion"
 	"sigs.k8s.io/randfill"
 )
 
 func TestFuzzyConversion(t *testing.T) {
 	t.Run("for SubNamespace", utilconversion.FuzzTestFunc(utilconversion.FuzzTestFuncInput{
-		Hub:         &accuratev2.SubNamespace{},
-		Spoke:       &SubNamespace{},
+		Hub:   &accuratev2.SubNamespace{},
+		Spoke: &SubNamespace{},
+		HubAfterMutation: func(hub conversion.Hub) {
+			if ns, ok := hub.(*accuratev2.SubNamespace); ok {
+				ns.TypeMeta.Kind = ""
+				ns.TypeMeta.APIVersion = ""
+			}
+		},
+		SpokeAfterMutation: func(spoke conversion.Convertible) {
+			if ns, ok := spoke.(*SubNamespace); ok {
+				ns.TypeMeta.Kind = ""
+				ns.TypeMeta.APIVersion = ""
+				ns.Status = ""
+			}
+		},
 		FuzzerFuncs: []fuzzer.FuzzerFuncs{SubNamespaceStatusFuzzFunc},
 	}))
 }

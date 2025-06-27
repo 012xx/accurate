@@ -8,10 +8,8 @@ import (
 	"github.com/onsi/gomega"
 	"k8s.io/apimachinery/pkg/api/apitesting/fuzzer"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
-	metafuzzer "k8s.io/apimachinery/pkg/apis/meta/fuzzer"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	runtimeserializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/controller-runtime/pkg/conversion"
 	"sigs.k8s.io/randfill"
@@ -19,31 +17,20 @@ import (
 
 // GetFuzzer returns a new fuzzer to be used for testing.
 func GetFuzzer(scheme *runtime.Scheme, funcs ...fuzzer.FuzzerFuncs) *randfill.Filler {
-	funcs = append([]fuzzer.FuzzerFuncs{
-		metafuzzer.Funcs,
-		func(_ runtimeserializer.CodecFactory) []interface{} {
-			return []interface{}{
-				// Custom fuzzer for metav1.Time pointers which weren't
-				// fuzzed and always resulted in `nil` values.
-				// This implementation is somewhat similar to the one provided
-				// in the metafuzzer.Funcs.
-				func(input *metav1.Time, c randfill.Continue) {
-					if input != nil {
-						var sec, nsec uint32
-						c.Fill(&sec)
-						c.Fill(&nsec)
-						fuzzed := metav1.Unix(int64(sec), int64(nsec)).Rfc3339Copy()
-						input.Time = fuzzed.Time
-					}
-				},
+	filler := randfill.NewWithSeed(rand.Int63()) //nolint:gosec
+	filler = filler.Funcs(
+		func(input *metav1.Time, c randfill.Continue) {
+			if input != nil {
+				var sec, nsec uint32
+				c.Fill(&sec)
+				c.Fill(&nsec)
+				fuzzed := metav1.Unix(int64(sec), int64(nsec)).Rfc3339Copy()
+				input.Time = fuzzed.Time
 			}
 		},
-	}, funcs...)
-	return fuzzer.FuzzerFor(
-		fuzzer.MergeFuzzerFuncs(funcs...),
-		rand.NewSource(rand.Int63()), //nolint:gosec
-		runtimeserializer.NewCodecFactory(scheme),
 	)
+
+	return filler
 }
 
 // FuzzTestFuncInput contains input parameters
@@ -78,6 +65,11 @@ func FuzzTestFunc(input FuzzTestFuncInput) func(*testing.T) {
 				spokeBefore := input.Spoke.DeepCopyObject().(conversion.Convertible)
 				fzr.Fill(spokeBefore)
 
+				// Apply mutation to spokeBefore to normalize it
+				if input.SpokeAfterMutation != nil {
+					input.SpokeAfterMutation(spokeBefore)
+				}
+
 				// First convert spoke to hub
 				hubCopy := input.Hub.DeepCopyObject().(conversion.Hub)
 				g.Expect(spokeBefore.ConvertTo(hubCopy)).To(gomega.Succeed())
@@ -101,6 +93,11 @@ func FuzzTestFunc(input FuzzTestFuncInput) func(*testing.T) {
 				// Create the hub and fuzz it
 				hubBefore := input.Hub.DeepCopyObject().(conversion.Hub)
 				fzr.Fill(hubBefore)
+
+				// Apply mutation to hubBefore to normalize it
+				if input.HubAfterMutation != nil {
+					input.HubAfterMutation(hubBefore)
+				}
 
 				// First convert hub to spoke
 				dstCopy := input.Spoke.DeepCopyObject().(conversion.Convertible)
