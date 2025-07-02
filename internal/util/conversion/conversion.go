@@ -76,7 +76,7 @@ func FuzzTestFunc(input FuzzTestFuncInput) func(*testing.T) {
 			for i := 0; i < 10000; i++ {
 				// Create the spoke and fuzz it
 				spokeBefore := input.Spoke.DeepCopyObject().(conversion.Convertible)
-				fzr.Fuzz(spokeBefore)
+				fzr.Fill(spokeBefore)
 
 				// First convert spoke to hub
 				hubCopy := input.Hub.DeepCopyObject().(conversion.Hub)
@@ -100,7 +100,7 @@ func FuzzTestFunc(input FuzzTestFuncInput) func(*testing.T) {
 			for i := 0; i < 10000; i++ {
 				// Create the hub and fuzz it
 				hubBefore := input.Hub.DeepCopyObject().(conversion.Hub)
-				fzr.Fuzz(hubBefore)
+				fzr.Fill(hubBefore)
 
 				// First convert hub to spoke
 				dstCopy := input.Spoke.DeepCopyObject().(conversion.Convertible)
