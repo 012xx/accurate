@@ -6,7 +6,7 @@
   "onboarding": false,
   "requireConfig": "optional",
   "repositories": [
-    "cybozu-go/accurate"
+    "012xx/accurate"
   ],
   "extends": [
     "config:base",
