@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Accurate - Accurate Documentation</title>
+        <title>Installing kubectl plugin - Accurate Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -143,7 +143,7 @@
                         <a href="https://github.com/cybozu-go/accurate" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./install-plugin.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -172,17 +172,74 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="accurate-documentation"><a class="header" href="#accurate-documentation">Accurate documentation</a></h1>
-<p>Accurate is a Kubernetes controller for soft multi-tenancy environments.
-It is currently developed and maintained by <a href="https://cybozu-global.com/">Cybozu</a>.</p>
-<p>The repository is at https://github.com/cybozu-go/accurate .</p>
+                        <h1 id="installing-kubectl-plugin"><a class="header" href="#installing-kubectl-plugin">Installing kubectl plugin</a></h1>
+<p><code>kubectl-accurate</code> is a plugin for <code>kubectl</code> to make operations of Accurate easy.</p>
+<p>It is strongly recommended to install <code>kubectl-accurate</code> though Accurate can be used without the plugin.</p>
+<h2 id="installing-using-krew"><a class="header" href="#installing-using-krew">Installing using Krew</a></h2>
+<p><a href="https://krew.sigs.k8s.io/">Krew</a> is the plugin manager for kubectl command-line tool.</p>
+<p>See the <a href="https://krew.sigs.k8s.io/docs/user-guide/setup/install/">documentation</a> for how to install Krew.</p>
+<pre><code class="language-console">$ kubectl krew update
+$ kubectl krew install accurate
+</code></pre>
+<h2 id="installing-manually"><a class="header" href="#installing-manually">Installing manually</a></h2>
+<ol>
+<li>
+<p>Set <code>OS</code> to the operating system name</p>
+<p>OS is one of <code>linux</code>, <code>windows</code>, or <code>darwin</code> (MacOS).</p>
+<p>If Go is available, <code>OS</code> can be set automatically as follows:</p>
+<pre><code class="language-console">$ OS=$(go env GOOS)
+</code></pre>
+</li>
+<li>
+<p>Set <code>ARCH</code> to the operating system name</p>
+<p>ARCH is one of <code>amd64</code> or <code>arm64</code>.</p>
+<p>If Go is available, <code>ARCH</code> can be set automatically as follows:</p>
+<pre><code class="language-console">$ ARCH=$(go env GOARCH)
+</code></pre>
+</li>
+<li>
+<p>Set <code>VERSION</code> to the accurate version</p>
+<p>See the Accurate release page: https://github.com/cybozu-go/accurate/releases</p>
+<pre><code class="language-console">$ VERSION=&lt; The version you want to install &gt;
+</code></pre>
+</li>
+<li>
+<p>Download the binary and put it in a directory of your <code>PATH</code>.</p>
+<p>The following is an example to install the plugin in <code>/usr/local/bin</code>.</p>
+<pre><code class="language-console">$ curl -L -sS https://github.com/cybozu-go/accurate/releases/download/$(VERSION)/kubectl-accurate_$(VERSION)_$(OS)_$(ARCH).tar.gz \
+  | tar xz -C /usr/local/bin kubectl-accurate
+</code></pre>
+</li>
+<li>
+<p>Check the installation</p>
+<p>Run <code>kubectl accurate -h</code> and see the output looks like:</p>
+<pre><code class="language-console">$ kubectl accurate -h
+accurate is a subcommand of kubectl to manage Accurate features.
+
+Usage:
+  accurate [command]
+
+Available Commands:
+  completion  generate the autocompletion script for the specified shell
+  help        Help about any command
+  list        List namespace trees hierarchically
+  namespace   namespace subcommand
+  sub         sub-namespace command
+  template    template subcommand
+...
+</code></pre>
+</li>
+</ol>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="helm.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="usage.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -192,8 +249,11 @@ It is currently developed and maintained by <a href="https://cybozu-global.com/"
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="helm.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="usage.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

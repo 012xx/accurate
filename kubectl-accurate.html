@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Accurate - Accurate Documentation</title>
+        <title>kubectl-accurate - Accurate Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -143,7 +143,7 @@
                         <a href="https://github.com/cybozu-go/accurate" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./kubectl-accurate.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -172,17 +172,106 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="accurate-documentation"><a class="header" href="#accurate-documentation">Accurate documentation</a></h1>
-<p>Accurate is a Kubernetes controller for soft multi-tenancy environments.
-It is currently developed and maintained by <a href="https://cybozu-global.com/">Cybozu</a>.</p>
-<p>The repository is at https://github.com/cybozu-go/accurate .</p>
+                        <h1 id="kubectl-accurate"><a class="header" href="#kubectl-accurate">kubectl-accurate</a></h1>
+<p><code>kubectl-accurate</code> is a <code>kubectl</code> plugin for Accurate.</p>
+<h2 id="features"><a class="header" href="#features">Features</a></h2>
+<ul>
+<li>Hierarchical view of namespace trees</li>
+<li>Show the information about a namespace.
+<ul>
+<li>List of propagating/propagated resources in the namespace.</li>
+<li>Root or not.</li>
+<li>Template or not.</li>
+<li>The parent namespace, if it is a sub-namespace.</li>
+<li>The template namespace, if set.</li>
+</ul>
+</li>
+<li>Operations for root namespaces
+<ul>
+<li>Make an independent namespace to a root namespace.</li>
+<li>Make a root namespace back to an independent namespace, if it has no child sub-namespaces.</li>
+</ul>
+</li>
+<li>Operations for setting a template namespace</li>
+<li>Operations for sub-namespaces
+<ul>
+<li>Create a sub-namespace under a root namespace or another sub-namespace.</li>
+<li>Deleting a sub-namespace.</li>
+<li>Move a sub-namespace under a different root or sub-namespace.</li>
+<li>Convert an independent namespace to a sub-namespace.</li>
+<li>Convert a sub-namespace to a root namespace.</li>
+</ul>
+</li>
+</ul>
+<h2 id="generic-options"><a class="header" href="#generic-options">Generic options</a></h2>
+<p><code>kubectl-accurate</code> takes the same generic options as <code>kubectl</code> including:</p>
+<pre><code>Flags:
+      --as string                      Username to impersonate for the operation
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+</code></pre>
+<p>Note that <code>kubectl-accurate</code> does <em>not</em> use the namespace given by <code>-n</code> / <code>--namespace</code> flag.
+It always take namespace names as positional arguments.</p>
+<h2 id="commands"><a class="header" href="#commands">Commands</a></h2>
+<p>There is an alias for <code>namespace</code> sub-command that is <code>ns</code>.</p>
+<h3 id="list-root"><a class="header" href="#list-root"><code>list [ROOT]</code></a></h3>
+<p>List namespace trees hierarchically.
+If <code>ROOT</code> is given, only the tree starting from <code>ROOT</code> namespace is shown.</p>
+<h3 id="namespace-describe-ns"><a class="header" href="#namespace-describe-ns"><code>namespace describe NS</code></a></h3>
+<p>Describe the information about a namespace <code>NS</code> related to Accurate.</p>
+<h3 id="namespace-set-type-ns-type"><a class="header" href="#namespace-set-type-ns-type"><code>namespace set-type NS TYPE</code></a></h3>
+<p>Set the type of a namespace <code>NS</code> to <code>TYPE</code>.</p>
+<p>Valid types are <code>root</code> or <code>template</code>.</p>
+<p>To unset the type, specify <code>none</code> as the type.</p>
+<h3 id="template-list-template"><a class="header" href="#template-list-template"><code>template list [TEMPLATE]</code></a></h3>
+<p>List template namespace trees hierarchically.
+If TEMPLATE is not given, all template namespaces are shown hierarchically.
+If TEMPLATE is given, only the tree under the TEMPLATE namespace will be shown.</p>
+<h3 id="template-set-ns-template"><a class="header" href="#template-set-ns-template"><code>template set NS TEMPLATE</code></a></h3>
+<p>Set <code>TEMPLATE</code> namespace as the template of <code>NS</code> namespace.</p>
+<h3 id="template-unset-ns"><a class="header" href="#template-unset-ns"><code>template unset NS</code></a></h3>
+<p>Unset the template of <code>NS</code> namespace.</p>
+<h3 id="sub-create-name-ns"><a class="header" href="#sub-create-name-ns"><code>sub create NAME NS</code></a></h3>
+<p>Create a <a href="./crd_subnamespace.html">SubNamespace</a> named <code>NAME</code> in <code>NS</code> namespace.</p>
+<p>After that, Accurate will create a namespace <code>NAME</code> as a sub-namespace of <code>NS</code>.</p>
+<h3 id="sub-delete-name"><a class="header" href="#sub-delete-name"><code>sub delete NAME</code></a></h3>
+<p>Delete a <a href="./crd_subnamespace.html">SubNamespace</a> named <code>NAME</code> in the parent namespace of <code>NAME</code> namespace.</p>
+<p>After that, Accurate will delete <code>NAME</code> namespace.</p>
+<h3 id="sub-move-ns-parent"><a class="header" href="#sub-move-ns-parent"><code>sub move NS PARENT</code></a></h3>
+<p>Move a sub-namespace <code>NS</code> to a different root or sub-namespace.</p>
+<p>After that, Accurate will create <a href="./crd_subnamespace.html">SubNamespace</a> object in the new parent namespace.</p>
+<h3 id="sub-graft-ns-parent"><a class="header" href="#sub-graft-ns-parent"><code>sub graft NS PARENT</code></a></h3>
+<p>Like <code>sub move</code>, but this converts a non-sub-namespace <code>NS</code> to a sub-namespace of <code>PARENT</code>.</p>
+<p><code>NS</code> must not be a root namespace or have a template.</p>
+<h3 id="sub-cut-ns"><a class="header" href="#sub-cut-ns"><code>sub cut NS</code></a></h3>
+<p>Make a sub-namespace <code>NS</code> a new root namespace.
+The child sub-namespaces under <code>NS</code> will be moved along with it.</p>
+<p>Propagated resources with mode <code>update</code> in <code>NS</code> will be deleted.</p>
+<h3 id="sub-list-root"><a class="header" href="#sub-list-root"><code>sub list [ROOT]</code></a></h3>
+<p>Alias for <code>kubectl-accurate list</code> command.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="commands.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="accurate-controller.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -192,8 +281,11 @@ It is currently developed and maintained by <a href="https://cybozu-global.com/"
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="commands.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="accurate-controller.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

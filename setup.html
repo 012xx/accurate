@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Accurate - Accurate Documentation</title>
+        <title>Deploying Accurate - Accurate Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -143,7 +143,7 @@
                         <a href="https://github.com/cybozu-go/accurate" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./setup.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -172,17 +172,42 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="accurate-documentation"><a class="header" href="#accurate-documentation">Accurate documentation</a></h1>
-<p>Accurate is a Kubernetes controller for soft multi-tenancy environments.
-It is currently developed and maintained by <a href="https://cybozu-global.com/">Cybozu</a>.</p>
-<p>The repository is at https://github.com/cybozu-go/accurate .</p>
+                        <h1 id="deploying-accurate"><a class="header" href="#deploying-accurate">Deploying Accurate</a></h1>
+<ol>
+<li>
+<p>(Optional) Prepare cert-manager</p>
+<p>Accurate depends on <a href="https://cert-manager.io/">cert-manager</a> to issue TLS certificate for admission webhooks.
+If cert-manager is not installed on your cluster, install it as follows:</p>
+<pre><code class="language-console">$ curl -fsLO https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
+$ kubectl apply -f cert-manager.yaml
+</code></pre>
+</li>
+<li>
+<p>Setup Accurate Helm repository</p>
+<pre><code class="language-console">$ helm repo add accurate https://cybozu-go.github.io/accurate/
+$ helm repo update
+</code></pre>
+</li>
+<li>
+<p>Configuration Helm chart values</p>
+<p>Read <a href="config.html">Configurations</a> for details.</p>
+</li>
+<li>
+<p>Install the Accurate Helm chart</p>
+<pre><code class="language-console">$ helm install --create-namespace --namespace accurate accurate accurate/accurate -f values.yaml
+</code></pre>
+</li>
+</ol>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="config.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="helm.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -192,8 +217,11 @@ It is currently developed and maintained by <a href="https://cybozu-global.com/"
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="config.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="helm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

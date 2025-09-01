@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Accurate - Accurate Documentation</title>
+        <title>Concepts - Accurate Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -143,7 +143,7 @@
                         <a href="https://github.com/cybozu-go/accurate" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cybozu-go/accurate/edit/main/docs/./concepts.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -172,17 +172,43 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="accurate-documentation"><a class="header" href="#accurate-documentation">Accurate documentation</a></h1>
-<p>Accurate is a Kubernetes controller for soft multi-tenancy environments.
-It is currently developed and maintained by <a href="https://cybozu-global.com/">Cybozu</a>.</p>
-<p>The repository is at https://github.com/cybozu-go/accurate .</p>
+                        <h1 id="concepts"><a class="header" href="#concepts">Concepts</a></h1>
+<h2 id="namespace-types"><a class="header" href="#namespace-types">Namespace types</a></h2>
+<p>Accurate defines the following types of Namespaces:</p>
+<ul>
+<li>Template: Namespace labeled with <code>accurate.cybozu.com/type=template</code></li>
+<li>Root: Namespace labeled with <code>accurate.cybozu.com/type=root</code></li>
+<li>Sub-namespace: Namespace labeled with <code>accurate.cybozu.com/parent=&lt;name&gt;</code></li>
+</ul>
+<p>Any Namespace other than sub-namespaces can reference a template Namespace with <code>accurate.cybozu.com/template=&lt;name&gt;</code> label.</p>
+<p>Sub-namespace can reference a root or another sub-namespace as its parent.</p>
+<p>When configured to do so, Accurate propagates the Namespace labels, annotations, and namespace-scope resources from a referenced Namespace to referencing Namespaces.</p>
+<p>Circular references are prohibited by an admission webhook.</p>
+<h2 id="resource-propagation"><a class="header" href="#resource-propagation">Resource propagation</a></h2>
+<p>Accurate propagates any namespace-scope resource that are annotated with <code>accurate.cybozu.com/propagate=&lt;mode&gt;</code>.</p>
+<p>Mode is one of the following:</p>
+<ul>
+<li><code>create</code>: the resource will be created in referencing Namespaces if missing.</li>
+<li><code>update</code>: the resource will be created in referencing Namespaces if missing, or will be updated if not identical, or will be deleted when the resource in the referenced Namespace is deleted.</li>
+</ul>
+<h2 id="propagating-generated-resources-deprecated"><a class="header" href="#propagating-generated-resources-deprecated">Propagating generated resources (DEPRECATED)</a></h2>
+<blockquote>
+<p>[!WARNING]<br />
+Propagating generated resources is a deprecated feature and is subject for
+removal soon.</p>
+</blockquote>
+<p>If a resource annotated with <code>accurate.cybozu.com/propagate-generated=&lt;mode&gt;</code> creates a resource and set an owner reference in the created resource, Accurate automatically adds <code>accurate.cybozu.com/propagate=&lt;mode&gt;</code> to the created resource.</p>
+<p>This can be used, for example, to propagate Secret created from <a href="https://github.com/bitnami-labs/sealed-secrets">SealedSecret</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="getting_started.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -192,8 +218,11 @@ It is currently developed and maintained by <a href="https://cybozu-global.com/"
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="getting_started.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
