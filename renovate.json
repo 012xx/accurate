@@ -4,6 +4,7 @@
   "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
   "platform": "github",
   "onboarding": false,
+  "requireConfig": "optional",
   "repositories": [
     "cybozu-go/accurate"
   ],
