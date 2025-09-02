@@ -15,7 +15,7 @@ packages:
   - name: mikefarah/yq@v4.45.4
   - name: clamoriniere/crd-to-markdown@v0.0.3
   - name: kubernetes-sigs/controller-tools/controller-gen@v0.18.0
-  - name: helm/helm@v3.18.3
+  - name: helm/helm@v3.18.6
   - name: bitnami-labs/sealed-secrets@v0.30.0
   - name: goreleaser/goreleaser@v2.10.2
   - name: kubernetes/code-generator/applyconfiguration-gen@v0.33.1
