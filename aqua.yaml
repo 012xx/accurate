@@ -9,7 +9,7 @@ registries:
 packages:
   - name: kubernetes/kubectl@v1.33.1
   - name: kubernetes-sigs/kubebuilder@v4.6.0
-  - name: kubernetes-sigs/kustomize@kustomize/v5.7.0
+  - name: kubernetes-sigs/kustomize@kustomize/v5.7.1
   - name: kubernetes-sigs/kind@v0.29.0
   - name: rust-lang/mdBook@v0.4.51
   - name: mikefarah/yq@v4.45.4
